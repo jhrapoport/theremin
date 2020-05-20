@@ -1,0 +1,6 @@
+KEY_HEIGHT = 6
+KEY_WIDTH = 3
+
+ROW = 0
+
+N_KEYS = 13
