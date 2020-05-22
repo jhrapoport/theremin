@@ -1,18 +1,27 @@
 import tkinter as tk
-from . import Key, gui_const
-from Synth import Piano
+from . import gui_const
+from Synth import Theremin
 
 
 class Gui:
     def __init__(self):
-        self.piano = Piano.Piano()
+        self.note_playing = None
+        self.theremin = Theremin.Theremin()
         self.window = tk.Tk()
-        self.add_components()
+        self.config()
         self.run()
 
     def run(self):
         self.window.mainloop()
 
-    def add_components(self):
-        for i in range(gui_const.N_KEYS):
-            Key.Key(self.window, self.piano, i)
+    def on_motion(self, event):
+        if self.note_playing:
+            if abs(self.note_playing - event.x) < 10:
+                return
+            self.theremin.end_sound(self.note_playing, gui_const.WINDOW_LENGTH)
+        self.theremin.start_sound(event.x, gui_const.WINDOW_LENGTH)
+        self.note_playing = event.x
+
+    def config(self):
+        self.window.bind("<Motion>", self.on_motion)
+        self.window.geometry(gui_const.WINDOW_DIMENSIONS)
