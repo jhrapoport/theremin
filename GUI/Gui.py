@@ -6,7 +6,7 @@ from Synth import Theremin
 class Gui:
     def __init__(self):
         self.note_playing = None
-        self.theremin = Theremin.Theremin()
+        self.theremin = Theremin.Theremin(gui_const.WINDOW_LENGTH)
         self.window = tk.Tk()
         self.config()
         self.run()
@@ -15,13 +15,9 @@ class Gui:
         self.window.mainloop()
 
     def on_motion(self, event):
-        if self.note_playing:
-            if abs(self.note_playing - event.x) < 10:
-                return
-            self.theremin.end_sound(self.note_playing, gui_const.WINDOW_LENGTH)
-        self.theremin.start_sound(event.x, gui_const.WINDOW_LENGTH)
-        self.note_playing = event.x
+        self.theremin.switch_note(event.x)
 
     def config(self):
         self.window.bind("<Motion>", self.on_motion)
         self.window.geometry(gui_const.WINDOW_DIMENSIONS)
+        self.window.resizable(0, 0)

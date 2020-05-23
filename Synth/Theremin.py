@@ -1,46 +1,37 @@
-import simpleaudio
+import time
+import pyaudio
 
 from . import functions, synth_const
 
 
 class Theremin:
-    def __init__(self):
-        self.play = True
-        self.record = False
+    def __init__(self, n_notes):
         self.sounds = []
-        self.players = []
-
-        for i in range(synth_const.N_TONES):
-            freq = functions.get_pixels_freq(i)
+        self.current_note_i = 0
+        for i in range(n_notes):
+            freq = functions.get_note_freq(i, n_notes)
             note = functions.make_note(freq)
             sound = functions.make_sound(note)
             self.sounds.append(sound)
-            self.players.append(None)
+        self.setup_pyaudio()
 
-    def start_sound(self, note_pixel, max_pixel):
-        note_i = int(synth_const.N_TONES*note_pixel/max_pixel)
-        if self.play:
-            self.start_playing(note_i)
-        if self.record:
-            self.start_recording(note_i)
+    # change the current note playing
+    def switch_note(self, note_i):
+        self.current_note_i = note_i
 
-    def end_sound(self, note_pixel, max_pixel):
-        note_i = int(synth_const.N_TONES*note_pixel/max_pixel)
-        if self.play:
-            self.stop_playing(note_i)
-        if self.record:
-            self.stop_recording(note_i)
+    # automatically calls this whenever it needs more sound: returns the current note to be played
+    def callback(self, in_data, frame_count, time_info, status):
+        data = self.sounds[self.current_note_i]
+        return data, pyaudio.paContinue
 
-    def start_playing(self, note_i):
-        sound = self.sounds[note_i]
-        self.players[note_i] = simpleaudio.play_buffer(sound, 1, 2, synth_const.FRAME_RATE)
+    # setup all the pyaudio stuff
+    def setup_pyaudio(self):
+        # start it
+        p = pyaudio.PyAudio()
+        # open up a stream
+        stream = p.open(format=p.get_format_from_width(synth_const.N_BYTES),
+                        channels=synth_const.N_CHANNELS, rate=synth_const.FRAME_RATE,
+                        output=True, stream_callback=self.callback)
+        # and start the stream
+        stream.start_stream()
 
-    def stop_playing(self, note_i):
-        self.players[note_i].stop()
-        self.players[note_i] = None
-
-    def start_recording(self, note_i):
-        pass
-
-    def stop_recording(self, note_i):
-        pass

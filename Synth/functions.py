@@ -2,9 +2,9 @@ import numpy
 from . import synth_const
 
 
-# get the frequency at the given pixel
-def get_pixels_freq(pixel_n):
-    return synth_const.MIN_FREQ + pixel_n * synth_const.STEP_SIZE
+# get the frequency of the note indexed at note_i out of n_notes
+def get_note_freq(note_i, n_notes):
+    return synth_const.MIN_FREQ + (synth_const.MAX_FREQ - synth_const.MIN_FREQ)*note_i/n_notes
 
 
 # take the given frequency and convert it into an ndarray of samples
