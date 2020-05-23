@@ -6,6 +6,7 @@ from . import functions, synth_const
 
 class Theremin:
     def __init__(self, n_tones, n_volumes):
+        self.stream = None
         self.sounds = []
         self.current_tone_i = 0
         self.current_volume_i = 0
@@ -29,12 +30,6 @@ class Theremin:
 
     # automatically calls this whenever it needs more sound: returns the current tone to be played
     def callback(self, in_data, frame_count, time_info, status):
-        print("(", end = "")
-        print(self.current_tone_i, end = "/")
-        print(len(self.sounds), end = ", ")
-        print(self.current_volume_i, end = "/")
-        print(len(self.sounds[0]), end = ")")
-        print()
         data = self.sounds[self.current_tone_i][self.current_volume_i]
         return data, pyaudio.paContinue
 
@@ -43,9 +38,9 @@ class Theremin:
         # start it
         p = pyaudio.PyAudio()
         # open up a stream
-        stream = p.open(format=p.get_format_from_width(synth_const.N_BYTES),
+        self.stream = p.open(format=p.get_format_from_width(synth_const.N_BYTES),
                         channels=synth_const.N_CHANNELS, rate=synth_const.FRAME_RATE,
                         output=True, stream_callback=self.callback)
         # and start the stream
-        stream.start_stream()
+        self.stream.start_stream()
 
