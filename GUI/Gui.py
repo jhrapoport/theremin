@@ -22,6 +22,7 @@ class Gui:
         self.window.destroy()
 
     def config(self):
+        self.window.configure(cursor="hand1 black")
         self.window.bind("<Motion>", self.on_motion)
         self.window.geometry(gui_const.WINDOW_DIMENSIONS)
         self.window.resizable(0, 0)
