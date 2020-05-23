@@ -6,7 +6,6 @@ from . import functions, synth_const
 
 class Theremin:
     def __init__(self, n_tones, n_volumes):
-        self.stream = None
         self.sounds = []
         self.current_tone_i = 0
         self.current_volume_i = 0
@@ -21,6 +20,9 @@ class Theremin:
                 sound = functions.make_sound(tone, j, n_volumes)
                 # add it to the 2D array of sounds
                 self.sounds[-1].append(sound)
+        # setup pyaudio
+        self.stream = None
+        self.pyaudio = None
         self.setup_pyaudio()
 
     # change the current tone playing
@@ -35,12 +37,16 @@ class Theremin:
 
     # setup all the pyaudio stuff
     def setup_pyaudio(self):
-        # start it
-        p = pyaudio.PyAudio()
-        # open up a stream
-        self.stream = p.open(format=p.get_format_from_width(synth_const.N_BYTES),
-                        channels=synth_const.N_CHANNELS, rate=synth_const.FRAME_RATE,
-                        output=True, stream_callback=self.callback)
+        # start pyaudio
+        self.pyaudio = pyaudio.PyAudio()
+        # open the stream
+        self.stream = self.pyaudio.open(format=self.pyaudio.get_format_from_width(synth_const.N_BYTES),
+                                    channels=synth_const.N_CHANNELS, rate=synth_const.FRAME_RATE,
+                                    output=True, stream_callback=self.callback)
         # and start the stream
         self.stream.start_stream()
 
+    def destruct(self):
+        self.stream.stop_stream()
+        self.stream.close()
+        self.pyaudio.terminate()

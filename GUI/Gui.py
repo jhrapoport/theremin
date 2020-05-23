@@ -17,8 +17,13 @@ class Gui:
     def on_motion(self, event):
         self.theremin.switch_sound(event.x, gui_const.WINDOW_HEIGHT - event.y - 1)
 
+    def on_close(self):
+        self.theremin.destruct()
+        self.window.destroy()
+
     def config(self):
         self.window.bind("<Motion>", self.on_motion)
         self.window.geometry(gui_const.WINDOW_DIMENSIONS)
         self.window.resizable(0, 0)
         self.window.title("Theremin")
+        self.window.protocol("WM_DELETE_WINDOW", self.on_close)
