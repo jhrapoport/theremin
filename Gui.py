@@ -1,6 +1,6 @@
 import tkinter as tk
-from . import gui_const
-from Synth import Theremin
+import gui_const
+import Theremin
 
 
 class Gui:

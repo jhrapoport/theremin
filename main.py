@@ -1,3 +1,3 @@
-from GUI import Gui
+import Gui
 
 my_gui = Gui.Gui()

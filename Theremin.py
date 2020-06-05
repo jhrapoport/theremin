@@ -4,7 +4,7 @@ import threading
 import numpy
 import sounddevice
 
-from . import synth_const
+import synth_const
 
 
 class Theremin:
