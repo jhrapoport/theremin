@@ -1,4 +1,0 @@
-CANVAS_HEIGHT = 300
-CANVAS_LENGTH = 400
-BG_COLOR = "gray"
-CANVAS_COLOR = "lightgray"

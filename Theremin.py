@@ -1,10 +1,8 @@
 import time
 import threading
-
 import numpy
 import sounddevice
-
-import synth_const
+import const
 
 
 class Theremin:
@@ -19,9 +17,9 @@ class Theremin:
 
     # change the current sound playing
     def switch_sound(self, freq_i, amp_i):
-        self.amp = synth_const.MAX_AMP * amp_i / self.max_amp_i
-        self.freq = synth_const.MIN_FREQ + \
-                    (synth_const.MAX_FREQ - synth_const.MIN_FREQ) * freq_i / self.max_freq_i
+        self.amp = const.MAX_AMP * amp_i / self.max_amp_i
+        self.freq = const.MIN_FREQ + \
+                    (const.MAX_FREQ - const.MIN_FREQ) * freq_i / self.max_freq_i
 
     # make the sound start playing
     def start_sound(self):
