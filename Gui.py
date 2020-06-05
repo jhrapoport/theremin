@@ -14,15 +14,6 @@ class Gui:
     def run(self):
         self.window.mainloop()
 
-    def on_motion(self, event):
-        distance = abs(const.CANVAS_LENGTH / 2 - event.x)
-        height = const.CANVAS_HEIGHT - event.y - 1
-        self.theremin.switch_sound(distance, height)
-
-    def on_close(self):
-        self.theremin.destruct()
-        self.window.destroy()
-
     def config(self):
         self.config_window()
         self.add_canvas()
@@ -39,6 +30,19 @@ class Gui:
         canvas.grid(column=0, row=0, columnspan=5, rowspan=5)
         canvas.configure(cursor="hand1 black")
         canvas.bind("<Motion>", self.on_motion)
+        canvas.bind("<Leave>", self.on_leave)
+
+    def on_motion(self, event):
+        distance = abs(const.CANVAS_LENGTH / 2 - event.x)
+        height = const.CANVAS_HEIGHT - event.y - 1
+        self.theremin.switch_sound(distance, height)
+
+    def on_leave(self, event):
+        self.theremin.pause()
+
+    def on_close(self):
+        self.theremin.destruct()
+        self.window.destroy()
 
     def add_widgets(self):
         volume_slider = tk.Scale(self.window, command=lambda x: self.change_volume(x))

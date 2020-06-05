@@ -44,5 +44,8 @@ class Theremin:
     def adjust_volume(self, new_volume):
         self.volume = new_volume
 
+    def pause(self):
+        self.switch_sound(0, 0)
+
     def destruct(self):
         self.playing = False
