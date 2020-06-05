@@ -1,4 +1,5 @@
 import tkinter as tk
+from PIL import ImageTk, Image
 import gui_const
 import Theremin
 
@@ -15,7 +16,7 @@ class Gui:
         self.window.mainloop()
 
     def on_motion(self, event):
-        self.theremin.switch_sound(event.x, gui_const.WINDOW_HEIGHT - event.y - 1)
+        self.theremin.switch_sound(490 - abs(490 - event.x), gui_const.WINDOW_HEIGHT - event.y - 1)
 
     def on_close(self):
         self.theremin.destruct()
@@ -28,3 +29,8 @@ class Gui:
         self.window.resizable(0, 0)
         self.window.title("Theremin")
         self.window.protocol("WM_DELETE_WINDOW", self.on_close)
+        theremin_img = ImageTk.PhotoImage(Image.open("theremin.png"))
+        label = tk.Label(self.window, image=theremin_img)
+        label.image = theremin_img
+        label.place(x=0, y=30)
+
