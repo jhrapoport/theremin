@@ -1,52 +1,45 @@
 import time
-import pyaudio
+import threading
 
-from . import functions, synth_const
+import numpy
+import sounddevice
+
+from . import synth_const
 
 
 class Theremin:
-    def __init__(self, n_tones, n_volumes):
-        self.sounds = []
-        self.current_tone_i = 0
-        self.current_volume_i = 0
-        # make all the musical tones
-        for i in range(n_tones):
-            freq = functions.get_tone_freq(i, n_tones)
-            tone = functions.make_tone(freq)
-            self.sounds.append([])
-            # make all the volume options for the current tone
-            for j in range(n_volumes):
-                # make that current sound
-                sound = functions.make_sound(tone, j, n_volumes)
-                # add it to the 2D array of sounds
-                self.sounds[-1].append(sound)
-        # setup pyaudio
-        self.stream = None
-        self.pyaudio = None
-        self.setup_pyaudio()
+    def __init__(self, max_freq_i, max_amp_i):
+        self.amp = 0
+        self.freq = 0
+        self.max_freq_i = max_freq_i
+        self.max_amp_i = max_amp_i
+        self.samplerate = sounddevice.query_devices(None, 'output')['default_samplerate']
+        self.playing = True
+        self.start_sound()
 
-    # change the current tone playing
-    def switch_sound(self, tone_i, volume_i):
-        self.current_tone_i = tone_i
-        self.current_volume_i = volume_i
+    # change the current sound playing
+    def switch_sound(self, freq_i, amp_i):
+        self.amp = synth_const.MAX_AMP * amp_i / self.max_amp_i
+        self.freq = synth_const.MIN_FREQ + \
+                    (synth_const.MAX_FREQ - synth_const.MIN_FREQ) * freq_i / self.max_freq_i
 
-    # automatically calls this whenever it needs more sound: returns the current tone to be played
-    def callback(self, in_data, frame_count, time_info, status):
-        data = self.sounds[self.current_tone_i][self.current_volume_i]
-        return data, pyaudio.paContinue
+    # make the sound start playing
+    def start_sound(self):
+        # make a thread for this so the gui and the sound can run concurrently
+        t = threading.Thread(target=self.make_sound_thread)
+        t.start()
 
-    # setup all the pyaudio stuff
-    def setup_pyaudio(self):
-        # start pyaudio
-        self.pyaudio = pyaudio.PyAudio()
-        # open the stream
-        self.stream = self.pyaudio.open(format=self.pyaudio.get_format_from_width(synth_const.N_BYTES),
-                                    channels=synth_const.N_CHANNELS, rate=synth_const.FRAME_RATE,
-                                    output=True, stream_callback=self.callback)
-        # and start the stream
-        self.stream.start_stream()
+    def make_sound_thread(self):
+        with sounddevice.OutputStream(device=sounddevice.default.device, channels=1, callback=self.callback,
+                                      samplerate=self.samplerate):
+            # check once per second whether to stop playing
+            while self.playing:
+                time.sleep(1)
+
+    def callback(self, outdata, frames, time, status):
+        t = numpy.arange(frames) / self.samplerate
+        t = t.reshape(-1, 1)
+        outdata[:] = self.amp * numpy.sin(2 * numpy.pi * self.freq * t)
 
     def destruct(self):
-        self.stream.stop_stream()
-        self.stream.close()
-        self.pyaudio.terminate()
+        self.playing = False
