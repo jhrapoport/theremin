@@ -7,6 +7,7 @@ import const
 
 class Theremin:
     def __init__(self, max_freq_i, max_amp_i):
+        self.weird_offset = 0
         self.volume = const.DEFAULT_VOLUME
         self.amp = 0
         self.freq = 0
@@ -37,9 +38,10 @@ class Theremin:
                 time.sleep(1)
 
     def callback(self, outdata, frames, time, status):
-        t = numpy.arange(frames) / self.samplerate
+        t = (self.weird_offset + numpy.arange(frames)) / self.samplerate
         t = t.reshape(-1, 1)
         outdata[:] = self.amp * numpy.sin(2 * numpy.pi * self.freq * t)
+        self.weird_offset += frames
 
     def adjust_volume(self, new_volume):
         self.volume = new_volume
