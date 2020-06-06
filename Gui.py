@@ -1,5 +1,4 @@
 import tkinter as tk
-import tkinter.font as font
 import const
 import Theremin
 
@@ -41,7 +40,7 @@ class Gui:
                               const.ANTENNA_X + 30, const.CANVAS_HEIGHT - 30)
 
     def on_motion(self, event):
-        distance = abs(const.CANVAS_LENGTH / 2 - event.x)
+        distance = const.CANVAS_LENGTH / 2 - abs(const.CANVAS_LENGTH / 2 - event.x)
         height = const.CANVAS_HEIGHT - event.y - 1
         self.theremin.switch_sound(distance, height)
 
