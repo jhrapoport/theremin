@@ -6,7 +6,7 @@ import Theremin
 
 class Gui:
     def __init__(self):
-        self.theremin = Theremin.Theremin(const.CANVAS_LENGTH / 2, const.CANVAS_HEIGHT)
+        self.theremin = Theremin.Theremin(const.ANTENNA_X, const.CANVAS_HEIGHT)
         self.window = tk.Tk()
         self.config()
         self.run()
@@ -31,6 +31,14 @@ class Gui:
         canvas.configure(cursor="hand1 black")
         canvas.bind("<Motion>", self.on_motion)
         canvas.bind("<Leave>", self.on_leave)
+        self.draw_theremin(canvas)
+
+    def draw_theremin(self, canvas):
+        canvas.create_line(const.ANTENNA_X, 10, const.ANTENNA_X, const.CANVAS_HEIGHT - 10, width=4)
+        canvas.create_polygon(const.ANTENNA_X + 20, const.CANVAS_HEIGHT - 10,
+                              const.ANTENNA_X - 40, const.CANVAS_HEIGHT - 10,
+                              const.ANTENNA_X - 30, const.CANVAS_HEIGHT - 30,
+                              const.ANTENNA_X + 30, const.CANVAS_HEIGHT - 30)
 
     def on_motion(self, event):
         distance = abs(const.CANVAS_LENGTH / 2 - event.x)
