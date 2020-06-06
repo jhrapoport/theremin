@@ -7,7 +7,8 @@ import const
 
 class Theremin:
     def __init__(self, max_freq_i, max_amp_i):
-        self.weird_offset = 0
+        self.sin_start = 0
+        self.sin_up = True
         self.volume = const.DEFAULT_VOLUME
         self.amp = 0
         self.freq = 0
@@ -37,11 +38,31 @@ class Theremin:
             while self.playing:
                 time.sleep(1)
 
+    # get the number of frames we need to skip ahead to make this sin wave start where last left off
+    def get_sin_offset(self, frames):
+        test_t = (numpy.arange(frames)) / self.samplerate
+        test_t = test_t.reshape(-1, 1)
+        test_t = self.amp * numpy.sin(2 * numpy.pi * self.freq * test_t)
+        for i in range(len(test_t) - 1):
+            # if the sine wave was on an upswing, check for that case
+            if self.sin_up:
+                if test_t[i] <= self.sin_start <= test_t[i + 1]:
+                    return i
+            # if the sine wave was on a downswing, check for that case
+            else:
+                if test_t[i] >= self.sin_start >= test_t[i + 1]:
+                    return i
+        return -1
+
     def callback(self, outdata, frames, time, status):
-        t = (self.weird_offset + numpy.arange(frames)) / self.samplerate
+        sin_offset = self.get_sin_offset(frames)
+        t = (sin_offset + numpy.arange(frames)) / self.samplerate
         t = t.reshape(-1, 1)
         outdata[:] = self.amp * numpy.sin(2 * numpy.pi * self.freq * t)
-        self.weird_offset += frames
+        # get the last insantaneous sine value so next wave can match up with it
+        self.sin_start = float(outdata[-1])
+        # check whether that wave was going up or down
+        self.sin_up = float(outdata[-1]) > float(outdata[-2])
 
     def adjust_volume(self, new_volume):
         self.volume = new_volume
