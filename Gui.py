@@ -1,11 +1,13 @@
 import tkinter as tk
 import const
 import Theremin
+import Px_sound_calc
 
 
 class Gui:
     def __init__(self):
-        self.theremin = Theremin.Theremin(const.ANTENNA_X, const.CANVAS_HEIGHT)
+        self.px_sound_calc = Px_sound_calc.Px_sound_calc()
+        self.theremin = Theremin.Theremin()
         self.window = tk.Tk()
         self.config()
         self.run()
@@ -24,7 +26,7 @@ class Gui:
         self.window.protocol("WM_DELETE_WINDOW", self.on_close)
 
     def add_canvas(self):
-        canvas = tk.Canvas(self.window, width=const.CANVAS_LENGTH, height=const.CANVAS_HEIGHT,
+        canvas = tk.Canvas(self.window, width=const.CANVAS_WIDTH, height=const.CANVAS_HEIGHT,
                            background=const.CANVAS_COLOR)
         canvas.grid(column=0, row=0, columnspan=5, rowspan=5)
         canvas.configure(cursor="hand1 black")
@@ -40,9 +42,9 @@ class Gui:
                               const.ANTENNA_X + 30, const.CANVAS_HEIGHT - 30)
 
     def on_motion(self, event):
-        distance = const.CANVAS_LENGTH / 2 - abs(const.CANVAS_LENGTH / 2 - event.x)
-        height = const.CANVAS_HEIGHT - event.y - 1
-        self.theremin.switch_sound(distance, height)
+        freq = self.px_sound_calc.get_freq(event.x)
+        amp = self.px_sound_calc.get_amp(event.y)
+        self.theremin.switch_sound(freq, amp)
 
     def on_leave(self, event):
         self.theremin.pause()
@@ -59,4 +61,4 @@ class Gui:
         volume_slider.set(const.DEFAULT_VOLUME)
 
     def change_volume(self, new_volume):
-        self.theremin.adjust_volume(float(new_volume))
+        self.px_sound_calc.adjust_volume(float(new_volume))
