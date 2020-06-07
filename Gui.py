@@ -11,6 +11,7 @@ class Gui:
         self.theremin = Theremin.Theremin()
         self.window = tk.Tk()
         self.canvas = tk.Canvas(self.window)
+        self.metronome_on = False
         self.config()
         self.run()
 
@@ -61,21 +62,38 @@ class Gui:
     def add_widgets(self):
         self.add_volume_slider()
         self.add_freq_controls()
+        self.add_metronome()
 
     def add_volume_slider(self):
         label = tk.Label(self.window, text="Volume:")
-        label.grid(column=6, row=1, sticky=tk.E)
+        label.grid(column=6, row=0, sticky=tk.E)
         label.config(fg=const.LABEL_FG_COLOR, bg=const.LABEL_BG_COLOR)
         volume_slider = tk.Scale(self.window, command=lambda x: self.change_volume(x))
         volume_slider.config(background=const.SLIDER_COLOR, from_=0.0, to=1.0,
                              resolution=0.01, length=64, orient=tk.HORIZONTAL,
                              showvalue=0, sliderlength=15, borderwidth=0,
                              troughcolor=const.CANVAS_COLOR, highlightthickness=0)
-        volume_slider.grid(column=7, row=1)
+        volume_slider.grid(column=7, row=0)
         volume_slider.set(const.DEFAULT_VOLUME)
 
     def change_volume(self, new_volume):
         self.px_sound_calc.adjust_volume(float(new_volume))
+
+    def add_metronome(self):
+        label = tk.Label(self.window, text="Metronome:")
+        label.grid(column=6, row=1, sticky=tk.E)
+        label.config(fg=const.LABEL_FG_COLOR, bg=const.LABEL_BG_COLOR)
+        button = tk.Button(self.window)
+        button.config(command=lambda: self.on_metronome(button), borderwidth=2, highlightthickness=0,
+                      background=const.BUTTON_OFF, activebackground=const.BUTTON_OFF_H)
+        button.grid(column=7, row=1)
+
+    def on_metronome(self, button):
+        self.metronome_on = not self.metronome_on
+        if self.metronome_on:
+            button.config(background=const.BUTTON_ON, activebackground=const.BUTTON_ON_H)
+        else:
+            button.config(background=const.BUTTON_OFF, activebackground=const.BUTTON_OFF_H)
 
     def add_freq_controls(self):
         label = tk.Label(self.window, text="Min. frequency:")
