@@ -21,3 +21,13 @@ class Px_sound_calc:
 
     def adjust_volume(self, new_volume):
         self.volume = new_volume
+
+    # inverse of the get_freq() function: freq->pixel conversion
+    def get_px_x(self, freq, left=False):
+        half_width = self.width / 2
+        left_px = int(half_width * (freq - self.min_freq) / (self.max_freq - self.min_freq))
+        if left:
+            return left_px
+        else:
+            return self.width - left_px
+

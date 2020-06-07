@@ -46,6 +46,10 @@ class Gui:
         freq = self.px_sound_calc.get_freq(event.x)
         amp = self.px_sound_calc.get_amp(event.y)
         self.theremin.switch_sound(freq, amp)
+        print(freq)
+        print(event.x)
+        print(self.px_sound_calc.get_px_x(freq))
+        print()
 
     def on_leave(self, event):
         self.theremin.pause()
