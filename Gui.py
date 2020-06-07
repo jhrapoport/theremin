@@ -2,6 +2,7 @@ import tkinter as tk
 import const
 import Theremin
 import Px_sound_calc
+import note_freq_calc
 
 
 class Gui:
@@ -9,6 +10,7 @@ class Gui:
         self.px_sound_calc = Px_sound_calc.Px_sound_calc()
         self.theremin = Theremin.Theremin()
         self.window = tk.Tk()
+        self.canvas = tk.Canvas(self.window)
         self.config()
         self.run()
 
@@ -27,17 +29,16 @@ class Gui:
         self.window.resizable(0, 0)
 
     def add_canvas(self):
-        canvas = tk.Canvas(self.window, width=const.CANVAS_WIDTH, height=const.CANVAS_HEIGHT,
-                           background=const.CANVAS_COLOR)
-        canvas.grid(column=0, row=0, columnspan=5, rowspan=5)
-        canvas.configure(cursor="hand1 black")
-        canvas.bind("<Motion>", self.on_motion)
-        canvas.bind("<Leave>", self.on_leave)
-        self.draw_theremin(canvas)
+        self.canvas.grid(column=0, row=0, columnspan=5, rowspan=5)
+        self.canvas.configure(width=const.CANVAS_WIDTH, height=const.CANVAS_HEIGHT)
+        self.canvas.configure(cursor="hand1 black", background=const.CANVAS_COLOR)
+        self.canvas.bind("<Motion>", self.on_motion)
+        self.canvas.bind("<Leave>", self.on_leave)
+        self.draw_theremin()
 
-    def draw_theremin(self, canvas):
-        canvas.create_line(const.ANTENNA_X, 10, const.ANTENNA_X, const.CANVAS_HEIGHT - 10, width=4)
-        canvas.create_polygon(const.ANTENNA_X + 20, const.CANVAS_HEIGHT - 10,
+    def draw_theremin(self):
+        self.canvas.create_line(const.ANTENNA_X, 10, const.ANTENNA_X, const.CANVAS_HEIGHT - 10, width=4)
+        self.canvas.create_polygon(const.ANTENNA_X + 20, const.CANVAS_HEIGHT - 10,
                               const.ANTENNA_X - 40, const.CANVAS_HEIGHT - 10,
                               const.ANTENNA_X - 30, const.CANVAS_HEIGHT - 30,
                               const.ANTENNA_X + 30, const.CANVAS_HEIGHT - 30)
@@ -96,4 +97,9 @@ class Gui:
             self.px_sound_calc.max_freq = float(max_freq)
         except ValueError:
             return
+
+    def draw_line(self, note_name):
+        freq = note_freq_calc.get_freq(note_name)
+        x_px = self.px_sound_calc.get_px_x(freq)
+        self.canvas.create_line(x_px, 10, x_px, const.CANVAS_HEIGHT - 10, width=4, fill="red")
 

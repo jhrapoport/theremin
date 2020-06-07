@@ -24,6 +24,8 @@ class Px_sound_calc:
 
     # inverse of the get_freq() function: freq->pixel conversion
     def get_px_x(self, freq, left=False):
+        if freq < const.MIN_FREQ or freq >= const.MAX_FREQ:
+            return -1
         half_width = self.width / 2
         left_px = int(half_width * (freq - self.min_freq) / (self.max_freq - self.min_freq))
         if left:
