@@ -24,6 +24,7 @@ class Gui:
         self.window.configure(background=const.BG_COLOR)
         self.window.title("Theremin")
         self.window.protocol("WM_DELETE_WINDOW", self.on_close)
+        self.window.resizable(0, 0)
 
     def add_canvas(self):
         canvas = tk.Canvas(self.window, width=const.CANVAS_WIDTH, height=const.CANVAS_HEIGHT,
@@ -54,11 +55,45 @@ class Gui:
         self.window.destroy()
 
     def add_widgets(self):
+        self.add_volume_slider()
+        self.add_freq_controls()
+
+    def add_volume_slider(self):
         volume_slider = tk.Scale(self.window, command=lambda x: self.change_volume(x))
         volume_slider.config(background="darkgray", from_=0.0, to=1.0, resolution=0.01, length=64)
         volume_slider.config(label="Volume", orient=tk.HORIZONTAL, showvalue=0, sliderlength=15)
-        volume_slider.grid(column=6, row=3)
+        volume_slider.grid(column=6, row=0)
         volume_slider.set(const.DEFAULT_VOLUME)
 
     def change_volume(self, new_volume):
         self.px_sound_calc.adjust_volume(float(new_volume))
+
+    def add_freq_controls(self):
+        label = tk.Label(self.window, text="Min. frequency:")
+        label.grid(column=6, row=1)
+        min_freq_control = tk.Entry(self.window)
+        min_freq_control.config(width=8)
+        min_freq_control.grid(column=7, row=1)
+        min_freq_control.insert(0, const.MIN_FREQ)
+        min_freq_control.bind('<Return>', lambda x: self.change_min_freq(min_freq_control.get()))
+
+        label = tk.Label(self.window, text="Max. frequency:")
+        label.grid(column=6, row=2)
+        max_freq_control = tk.Entry(self.window)
+        max_freq_control.config(width=8)
+        max_freq_control.grid(column=7, row=2)
+        max_freq_control.insert(0, const.MAX_FREQ)
+        max_freq_control.bind('<Return>', lambda x: self.change_max_freq(max_freq_control.get()))
+
+    def change_min_freq(self, min_freq):
+        try:
+            self.px_sound_calc.min_freq = float(min_freq)
+        except ValueError:
+            return
+
+    def change_max_freq(self, max_freq):
+        try:
+            self.px_sound_calc.max_freq = float(max_freq)
+        except ValueError:
+            return
+
