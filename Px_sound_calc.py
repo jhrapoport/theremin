@@ -29,5 +29,5 @@ class Px_sound_calc:
         if left:
             return left_px
         else:
-            return self.width - left_px
+            return self.width - left_px - 1
 
