@@ -3,6 +3,7 @@ import const
 import Theremin
 import Px_sound_calc
 import note_freq_calc
+import Metronome
 
 
 class Gui:
@@ -11,7 +12,7 @@ class Gui:
         self.theremin = Theremin.Theremin()
         self.window = tk.Tk()
         self.canvas = tk.Canvas(self.window)
-        self.metronome_on = False
+        self.metronome = Metronome.Metronome()
         self.config()
         self.run()
 
@@ -89,8 +90,8 @@ class Gui:
         button.grid(column=7, row=1)
 
     def on_metronome(self, button):
-        self.metronome_on = not self.metronome_on
-        if self.metronome_on:
+        # switch metronome on/off, and change button color accordingly
+        if self.metronome.switch():
             button.config(background=const.BUTTON_ON, activebackground=const.BUTTON_ON_H)
         else:
             button.config(background=const.BUTTON_OFF, activebackground=const.BUTTON_OFF_H)
