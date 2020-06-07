@@ -3,6 +3,10 @@ CANVAS_WIDTH = 900
 ANTENNA_X = CANVAS_WIDTH / 2
 BG_COLOR = "gray"
 CANVAS_COLOR = "lightgray"
+THEREMIN_BASE = "darkgray"
+THEREMIN_ROD = "black"
+SLIDER_COLOR = "darkgray"
+NOTE_COLOR = "red"
 
 DEFAULT_VOLUME = 0.05
 MAX_AMP = 0.5

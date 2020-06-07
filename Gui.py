@@ -37,11 +37,13 @@ class Gui:
         self.draw_theremin()
 
     def draw_theremin(self):
-        self.canvas.create_line(const.ANTENNA_X, 10, const.ANTENNA_X, const.CANVAS_HEIGHT - 10, width=4)
-        self.canvas.create_polygon(const.ANTENNA_X + 20, const.CANVAS_HEIGHT - 10,
-                              const.ANTENNA_X - 40, const.CANVAS_HEIGHT - 10,
-                              const.ANTENNA_X - 30, const.CANVAS_HEIGHT - 30,
-                              const.ANTENNA_X + 30, const.CANVAS_HEIGHT - 30)
+        self.canvas.create_polygon(const.ANTENNA_X + 25, const.CANVAS_HEIGHT - 10,
+                                   const.ANTENNA_X - 35, const.CANVAS_HEIGHT - 10,
+                                   const.ANTENNA_X - 25, const.CANVAS_HEIGHT - 30,
+                                   const.ANTENNA_X + 35, const.CANVAS_HEIGHT - 30,
+                                   fill=const.THEREMIN_BASE)
+        self.canvas.create_line(const.ANTENNA_X, 20, const.ANTENNA_X, const.CANVAS_HEIGHT - 20,
+                                width=4, fill=const.THEREMIN_ROD)
 
     def on_motion(self, event):
         freq = self.px_sound_calc.get_freq(event.x)
@@ -61,7 +63,7 @@ class Gui:
 
     def add_volume_slider(self):
         volume_slider = tk.Scale(self.window, command=lambda x: self.change_volume(x))
-        volume_slider.config(background="darkgray", from_=0.0, to=1.0, resolution=0.01, length=64)
+        volume_slider.config(background=const.SLIDER_COLOR, from_=0.0, to=1.0, resolution=0.01, length=64)
         volume_slider.config(label="Volume", orient=tk.HORIZONTAL, showvalue=0, sliderlength=15)
         volume_slider.grid(column=6, row=0)
         volume_slider.set(const.DEFAULT_VOLUME)
@@ -101,5 +103,5 @@ class Gui:
     def draw_line(self, note_name):
         freq = note_freq_calc.get_freq(note_name)
         x_px = self.px_sound_calc.get_px_x(freq)
-        self.canvas.create_line(x_px, 10, x_px, const.CANVAS_HEIGHT - 10, width=4, fill="red")
+        self.canvas.create_line(x_px, 10, x_px, const.CANVAS_HEIGHT - 10, width=4, fill=const.NOTE_COLOR)
 
