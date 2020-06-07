@@ -2,7 +2,6 @@ import time
 import threading
 import numpy
 import sounddevice
-import const
 
 
 class Theremin:
