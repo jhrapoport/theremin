@@ -19,7 +19,7 @@ class Gui:
 
     def config(self):
         self.config_window()
-        self.add_canvas()
+        self.config_canvas()
         self.add_widgets()
 
     def config_window(self):
@@ -28,10 +28,11 @@ class Gui:
         self.window.protocol("WM_DELETE_WINDOW", self.on_close)
         self.window.resizable(0, 0)
 
-    def add_canvas(self):
+    def config_canvas(self):
         self.canvas.grid(column=0, row=0, columnspan=5, rowspan=5)
-        self.canvas.configure(width=const.CANVAS_WIDTH, height=const.CANVAS_HEIGHT)
-        self.canvas.configure(cursor="hand1 black", background=const.CANVAS_COLOR)
+        self.canvas.configure(width=const.CANVAS_WIDTH, height=const.CANVAS_HEIGHT,
+                              cursor="hand1 black", background=const.CANVAS_COLOR,
+                              highlightthickness=0)
         self.canvas.bind("<Motion>", self.on_motion)
         self.canvas.bind("<Leave>", self.on_leave)
         self.draw_theremin()
@@ -62,10 +63,15 @@ class Gui:
         self.add_freq_controls()
 
     def add_volume_slider(self):
+        label = tk.Label(self.window, text="Volume:")
+        label.grid(column=6, row=1, sticky=tk.E)
+        label.config(fg=const.LABEL_FG_COLOR, bg=const.LABEL_BG_COLOR)
         volume_slider = tk.Scale(self.window, command=lambda x: self.change_volume(x))
-        volume_slider.config(background=const.SLIDER_COLOR, from_=0.0, to=1.0, resolution=0.01, length=64)
-        volume_slider.config(label="Volume", orient=tk.HORIZONTAL, showvalue=0, sliderlength=15)
-        volume_slider.grid(column=6, row=0)
+        volume_slider.config(background=const.SLIDER_COLOR, from_=0.0, to=1.0,
+                             resolution=0.01, length=64, orient=tk.HORIZONTAL,
+                             showvalue=0, sliderlength=15, borderwidth=0,
+                             troughcolor=const.CANVAS_COLOR, highlightthickness=0)
+        volume_slider.grid(column=7, row=1)
         volume_slider.set(const.DEFAULT_VOLUME)
 
     def change_volume(self, new_volume):
@@ -73,18 +79,22 @@ class Gui:
 
     def add_freq_controls(self):
         label = tk.Label(self.window, text="Min. frequency:")
-        label.grid(column=6, row=1)
+        label.grid(column=6, row=2, sticky=tk.E)
+        label.config(fg=const.LABEL_FG_COLOR, bg=const.LABEL_BG_COLOR)
         min_freq_control = tk.Entry(self.window)
-        min_freq_control.config(width=8)
-        min_freq_control.grid(column=7, row=1)
+        min_freq_control.config(width=7, highlightthickness=0, borderwidth=0,
+                                fg=const.LABEL_BG_COLOR, bg=const.LABEL_FG_COLOR)
+        min_freq_control.grid(column=7, row=2)
         min_freq_control.insert(0, const.MIN_FREQ)
         min_freq_control.bind('<Return>', lambda x: self.change_min_freq(min_freq_control.get()))
 
-        label = tk.Label(self.window, text="Max. frequency:")
-        label.grid(column=6, row=2)
+        label2 = tk.Label(self.window, text="Max. frequency:")
+        label2.grid(column=6, row=3, sticky=tk.E)
+        label2.config(fg=const.LABEL_FG_COLOR, bg=const.LABEL_BG_COLOR)
         max_freq_control = tk.Entry(self.window)
-        max_freq_control.config(width=8)
-        max_freq_control.grid(column=7, row=2)
+        max_freq_control.config(width=7, highlightthickness=0, borderwidth=0,
+                                fg=const.LABEL_BG_COLOR, bg = const.LABEL_FG_COLOR)
+        max_freq_control.grid(column=7, row=3)
         max_freq_control.insert(0, const.MAX_FREQ)
         max_freq_control.bind('<Return>', lambda x: self.change_max_freq(max_freq_control.get()))
 
