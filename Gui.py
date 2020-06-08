@@ -138,13 +138,17 @@ class Gui:
 
     def change_min_freq(self, min_freq):
         try:
-            self.px_sound_calc.min_freq = float(min_freq)
+            min_freq = float(min_freq)
+            if min_freq > 0:
+                self.px_sound_calc.min_freq = min_freq
         except ValueError:
             return
 
     def change_max_freq(self, max_freq):
         try:
-            self.px_sound_calc.max_freq = float(max_freq)
+            max_freq = float(max_freq)
+            if max_freq > 0:
+                self.px_sound_calc.min_freq = max_freq
         except ValueError:
             return
 

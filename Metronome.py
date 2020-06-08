@@ -16,7 +16,9 @@ class Metronome:
 
     def change_tempo(self, tempo):
         try:
-            self.tempo = float(tempo)
+            tempo = float(tempo)
+            if tempo >= 0 :
+                self.tempo = tempo
         except ValueError:
             return
 
