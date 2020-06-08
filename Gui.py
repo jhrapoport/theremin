@@ -11,6 +11,8 @@ class Gui:
         self.song = None
         self.song_i = -1
         self.last_note = None
+        self.last_note_text = None
+        self.show_note_names = True
         self.px_sound_calc = Px_sound_calc.Px_sound_calc()
         self.theremin = Theremin.Theremin()
         self.window = tk.Tk()
@@ -162,8 +164,11 @@ class Gui:
             return
 
         x_px = self.px_sound_calc.get_px_x(freq)
-        self.last_note = self.canvas.create_line(x_px, 10, x_px, const.CANVAS_HEIGHT - 10,
+        self.last_note = self.canvas.create_line(x_px, 10, x_px, const.CANVAS_HEIGHT - 15,
                                                  width=4, fill=const.NOTE_COLOR)
+        if self.show_note_names:
+            self.last_note_text = self.canvas.create_text(x_px, const.CANVAS_HEIGHT - 7,
+                                                          fill=const.NOTE_COLOR, text=note_name)
 
     def start_song(self):
         self.song = open(const.SONG_FILE_NAME, "r").read().split(",")[:-1]
@@ -176,16 +181,15 @@ class Gui:
         # delete the last note shown
         if self.last_note:
             self.canvas.delete(self.last_note)
+        if self.last_note_text:
+            self.canvas.delete(self.last_note_text)
         # if we reached the last note, stop playing song
         if self.song_i >= len(self.song):
             self.song_i = -1
             self.song = None
             self.last_note = None
+            self.last_note_text = None
         # if song is still going, draw the line and
         else:
             self.draw_note(self.song[self.song_i])
             self.song_i += 1
-
-
-
-
