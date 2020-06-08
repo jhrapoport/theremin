@@ -44,3 +44,5 @@ To run this program, in addition to the Python standard library, you need to hav
 Using Python 3, simply run main.py. In the Linux terminal, this would just be the  following command:  <code> python3 ./main.py </code>
 
 If you want to play a different song than the example in "song_notes.csv", you need to make a CSV file in the same format as that one. That is, giving one beat to each note name, and separating via commas in one long line. You can use that filename given, or change its value in the variable <code>SONG_FILE_NAME</code> in const.py.
+
+One extra note: if you want to change the values in the text boxes, make sure to press return after changing the value.
