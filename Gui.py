@@ -8,11 +8,14 @@ import Metronome
 
 class Gui:
     def __init__(self):
+        self.song = None
+        self.song_i = -1
+        self.last_note = None
         self.px_sound_calc = Px_sound_calc.Px_sound_calc()
         self.theremin = Theremin.Theremin()
         self.window = tk.Tk()
         self.canvas = tk.Canvas(self.window)
-        self.metronome = Metronome.Metronome()
+        self.metronome = Metronome.Metronome(self)
         self.config()
         self.run()
 
@@ -31,7 +34,7 @@ class Gui:
         self.window.resizable(0, 0)
 
     def config_canvas(self):
-        self.canvas.grid(column=0, row=0, columnspan=5, rowspan=11)
+        self.canvas.grid(column=0, row=0, columnspan=5, rowspan=14)
         self.canvas.configure(width=const.CANVAS_WIDTH, height=const.CANVAS_HEIGHT,
                               cursor="hand1 black", background=const.CANVAS_COLOR,
                               highlightthickness=0)
@@ -58,7 +61,7 @@ class Gui:
 
     def on_close(self):
         self.theremin.destruct()
-        self.metronome.off()
+        self.metronome.destruct()
         self.window.destroy()
 
     def add_widgets(self):
@@ -66,6 +69,7 @@ class Gui:
         self.add_metronome()
         self.add_tempo_control()
         self.add_freq_controls()
+        self.add_song_button()
 
     def add_volume_slider(self):
         label = tk.Label(self.window, text="Volume:")
@@ -142,8 +146,46 @@ class Gui:
         except ValueError:
             return
 
-    def draw_line(self, note_name):
+    def add_song_button(self):
+        label = tk.Label(self.window, text="Start song:")
+        label.grid(column=6, row=13, sticky=tk.E)
+        label.config(fg=const.LABEL_FG_COLOR, bg=const.LABEL_BG_COLOR)
+        button = tk.Button(self.window)
+        button.config(command=self.start_song, borderwidth=2, highlightthickness=0,
+                      background=const.BUTTON_OFF, activebackground=const.BUTTON_OFF_H)
+        button.grid(column=7, row=13)
+
+    def draw_note(self, note_name):
         freq = note_freq_calc.get_freq(note_name)
+        if freq >= self.px_sound_calc.max_freq:
+            print("Note of frequency {:.1f} is outside of visible range".format(freq))
+            return
+
         x_px = self.px_sound_calc.get_px_x(freq)
-        self.canvas.create_line(x_px, 10, x_px, const.CANVAS_HEIGHT - 10, width=4, fill=const.NOTE_COLOR)
+        self.last_note = self.canvas.create_line(x_px, 10, x_px, const.CANVAS_HEIGHT - 10,
+                                                 width=4, fill=const.NOTE_COLOR)
+
+    def start_song(self):
+        self.song = open("somewhereovertherainbow.csv", "r").read().split(",")[:-1]
+        self.song_i = 0
+
+    def beat(self):
+        # if no song playing, return
+        if self.song_i < 0:
+            return
+        # delete the last note shown
+        if self.last_note:
+            self.canvas.delete(self.last_note)
+        # if we reached the last note, stop playing song
+        if self.song_i >= len(self.song):
+            self.song_i = -1
+            self.song = None
+            self.last_note = None
+        # if song is still going, draw the line and
+        else:
+            self.draw_note(self.song[self.song_i])
+            self.song_i += 1
+
+
+
 
