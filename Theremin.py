@@ -37,7 +37,8 @@ class Theremin:
         test_t = (numpy.arange(frames)) / self.samplerate
         test_t = test_t.reshape(-1, 1)
         test_t = self.amp * numpy.sin(2 * numpy.pi * self.freq * test_t)
-        for i in range(len(test_t) - 1):
+        # try to find a good match
+        for i in range(frames - 1):
             # if the sine wave was on an upswing, check for that case
             if self.sin_up:
                 if test_t[i] <= self.sin_start <= test_t[i + 1]:
@@ -46,7 +47,15 @@ class Theremin:
             else:
                 if test_t[i] >= self.sin_start >= test_t[i + 1]:
                     return i
-        return -1
+
+        # if no good match found, then find a mediocre matchc
+        closest_i = -1
+        closest_difference = 99999
+        for i in range(frames - 1):
+            difference = abs(test_t[i] - self.sin_start)
+            if difference < closest_difference:
+                closest_i = i
+        return closest_i
 
     def callback(self, outdata, frames, time, status):
         sin_offset = self.get_sin_offset(frames)
