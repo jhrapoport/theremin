@@ -166,7 +166,7 @@ class Gui:
                                                  width=4, fill=const.NOTE_COLOR)
 
     def start_song(self):
-        self.song = open("somewhereovertherainbow.csv", "r").read().split(",")[:-1]
+        self.song = open(const.SONG_FILE_NAME, "r").read().split(",")[:-1]
         self.song_i = 0
 
     def beat(self):

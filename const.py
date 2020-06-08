@@ -27,3 +27,6 @@ BASE_NOTE = "A4"
 BASE_FREQUENCY = 440.0
 NOTES = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"]
 OCTAVE_DIVIDER = 3  # meaning the note after B7 is C8, not C7
+
+"""OTHER CONSTANTS"""
+SONG_FILE_NAME = "mysong.csv"
