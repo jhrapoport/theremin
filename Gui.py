@@ -58,6 +58,7 @@ class Gui:
 
     def on_close(self):
         self.theremin.destruct()
+        self.metronome.off()
         self.window.destroy()
 
     def add_widgets(self):

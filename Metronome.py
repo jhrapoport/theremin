@@ -1,5 +1,6 @@
 import threading
 import time
+import simpleaudio
 import const
 
 
@@ -7,7 +8,7 @@ class Metronome:
     def __init__(self):
         self.tempo = const.DEFAULT_TEMPO
         self.playing = False
-        self.temp = 0
+        self.beat = 0
 
     def change_tempo(self, tempo):
         self.tempo = tempo
@@ -27,13 +28,14 @@ class Metronome:
 
     def off(self):
         self.playing = False
+        self.beat = 0
 
     def play(self):
         while self.playing:
-            print(self.temp)
-            self.temp += 1
+            if self.beat != 3:
+                simpleaudio.WaveObject.from_wave_file("metsound1.wav").play()
+            else:
+                simpleaudio.WaveObject.from_wave_file("metsound2.wav").play()
+            self.beat = (self.beat + 1) % 4
             time.sleep(60/self.tempo)
-
-
-
 
