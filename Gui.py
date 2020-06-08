@@ -31,7 +31,7 @@ class Gui:
         self.window.resizable(0, 0)
 
     def config_canvas(self):
-        self.canvas.grid(column=0, row=0, columnspan=5, rowspan=5)
+        self.canvas.grid(column=0, row=0, columnspan=5, rowspan=11)
         self.canvas.configure(width=const.CANVAS_WIDTH, height=const.CANVAS_HEIGHT,
                               cursor="hand1 black", background=const.CANVAS_COLOR,
                               highlightthickness=0)
@@ -63,8 +63,9 @@ class Gui:
 
     def add_widgets(self):
         self.add_volume_slider()
-        self.add_freq_controls()
         self.add_metronome()
+        self.add_tempo_control()
+        self.add_freq_controls()
 
     def add_volume_slider(self):
         label = tk.Label(self.window, text="Volume:")
@@ -83,12 +84,12 @@ class Gui:
 
     def add_metronome(self):
         label = tk.Label(self.window, text="Metronome:")
-        label.grid(column=6, row=1, sticky=tk.E)
+        label.grid(column=6, row=4, sticky=tk.E)
         label.config(fg=const.LABEL_FG_COLOR, bg=const.LABEL_BG_COLOR)
         button = tk.Button(self.window)
         button.config(command=lambda: self.on_metronome(button), borderwidth=2, highlightthickness=0,
                       background=const.BUTTON_OFF, activebackground=const.BUTTON_OFF_H)
-        button.grid(column=7, row=1)
+        button.grid(column=7, row=4)
 
     def on_metronome(self, button):
         # switch metronome on/off, and change button color accordingly
@@ -97,24 +98,35 @@ class Gui:
         else:
             button.config(background=const.BUTTON_OFF, activebackground=const.BUTTON_OFF_H)
 
+    def add_tempo_control(self):
+        label = tk.Label(self.window, text="Tempo (bpm): ")
+        label.grid(column=6, row=5, sticky=tk.E)
+        label.config(fg=const.LABEL_FG_COLOR, bg=const.LABEL_BG_COLOR)
+        tempo_control = tk.Entry(self.window)
+        tempo_control.config(width=7, highlightthickness=0, borderwidth=0,
+                             fg=const.LABEL_BG_COLOR, bg=const.LABEL_FG_COLOR)
+        tempo_control.grid(column=7, row=5)
+        tempo_control.insert(0, const.DEFAULT_TEMPO)
+        tempo_control.bind('<Return>', lambda x: self.metronome.change_tempo(tempo_control.get()))
+
     def add_freq_controls(self):
         label = tk.Label(self.window, text="Min. frequency:")
-        label.grid(column=6, row=2, sticky=tk.E)
+        label.grid(column=6, row=9, sticky=tk.E)
         label.config(fg=const.LABEL_FG_COLOR, bg=const.LABEL_BG_COLOR)
         min_freq_control = tk.Entry(self.window)
         min_freq_control.config(width=7, highlightthickness=0, borderwidth=0,
                                 fg=const.LABEL_BG_COLOR, bg=const.LABEL_FG_COLOR)
-        min_freq_control.grid(column=7, row=2)
+        min_freq_control.grid(column=7, row=9)
         min_freq_control.insert(0, const.MIN_FREQ)
         min_freq_control.bind('<Return>', lambda x: self.change_min_freq(min_freq_control.get()))
 
         label2 = tk.Label(self.window, text="Max. frequency:")
-        label2.grid(column=6, row=3, sticky=tk.E)
+        label2.grid(column=6, row=10, sticky=tk.E)
         label2.config(fg=const.LABEL_FG_COLOR, bg=const.LABEL_BG_COLOR)
         max_freq_control = tk.Entry(self.window)
         max_freq_control.config(width=7, highlightthickness=0, borderwidth=0,
                                 fg=const.LABEL_BG_COLOR, bg = const.LABEL_FG_COLOR)
-        max_freq_control.grid(column=7, row=3)
+        max_freq_control.grid(column=7, row=10)
         max_freq_control.insert(0, const.MAX_FREQ)
         max_freq_control.bind('<Return>', lambda x: self.change_max_freq(max_freq_control.get()))
 

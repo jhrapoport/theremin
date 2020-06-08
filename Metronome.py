@@ -11,7 +11,10 @@ class Metronome:
         self.beat = 0
 
     def change_tempo(self, tempo):
-        self.tempo = tempo
+        try:
+            self.tempo = float(tempo)
+        except ValueError:
+            return
 
     def switch(self):
         if self.playing:
