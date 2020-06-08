@@ -16,6 +16,8 @@ As is described in the next section, I tested the audio quite a lot using Audio 
 
 Before using Audio Recorder/Audacity, I was hearing bad sounds and not knowing why. However, looking at the sound files, it became very clear exactly what was happening. I could see that the sine waves were switching over at random points, making disrupted noises. Once I tried to fix this, I saw the issue there as well, which was that a sine wave going up would then match up at the same height with a sine wave going down, which sounded just as bad. I go more into this in the following section. I also have the audio files in question, but the assignment requirements sound to me like I shouldn't include them; let me know if you'd like me to send them your way so you can hear the vast improvement in sound.
 
+One more test I did was on the metronome. I used my phone's stopwatch to ensure that it was keeping the number of beats it said it was. I tried this for one minute for 30bpm, 60pm, and 90bpm, and it worked as expectedly.
+
 
 ## Satisfaction
 Overall, the program worked much better than I expected it to. I wrote everything from complete scratch, so I didn't expect it to work very well.
